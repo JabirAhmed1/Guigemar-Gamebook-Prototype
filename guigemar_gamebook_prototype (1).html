@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guigemar: Chivalry or Love</title>
+  <style>
+    :root {
+      --parchment: #efe1bf;
+      --parchment-deep: #e0cda3;
+      --ink: #24170d;
+      --gold: #a67c2e;
+      --wine: #5b1f1f;
+      --forest: #283a2b;
+      --stone: #6d6255;
+      --panel: rgba(248, 241, 223, 0.94);
+      --border: #8b6a2b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(255, 244, 214, 0.12), transparent 35%),
+        linear-gradient(rgba(18, 12, 8, 0.35), rgba(18, 12, 8, 0.55)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1800' height='1200' viewBox='0 0 1800 1200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='0' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23293b2d'/%3E%3Cstop offset='45%25' stop-color='%234a3d31'/%3E%3Cstop offset='100%25' stop-color='%231d1410'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1800' height='1200' fill='url(%23g)'/%3E%3Cpath d='M0 900 C180 820 290 860 430 790 C560 725 610 675 740 700 C860 720 930 840 1060 850 C1200 862 1250 750 1390 770 C1540 790 1640 900 1800 860 L1800 1200 L0 1200 Z' fill='%231a241c'/%3E%3Cpath d='M0 760 C130 700 240 710 360 640 C490 565 630 580 760 625 C920 680 1010 670 1130 612 C1260 550 1380 560 1520 650 C1630 720 1710 765 1800 735 L1800 1200 L0 1200 Z' fill='%23212f24' opacity='0.88'/%3E%3Cpath d='M1190 320 L1270 210 L1340 320 Z' fill='%23302f34'/%3E%3Crect x='1220' y='320' width='90' height='260' fill='%2337363b'/%3E%3Crect x='1210' y='410' width='110' height='22' fill='%2329262b'/%3E%3Cpath d='M290 760 C350 620 460 500 560 425 C610 386 645 350 670 305 C690 270 694 230 720 190 C742 154 774 130 820 115' stroke='%23101511' stroke-width='18' fill='none' stroke-linecap='round'/%3E%3Cpath d='M290 760 C340 690 372 630 405 565' stroke='%23101511' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Cpath d='M405 565 C450 560 490 542 527 513' stroke='%23101511' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M510 470 C548 460 585 437 615 410' stroke='%23101511' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='705' cy='165' r='54' fill='%23d9d3c2' opacity='0.9'/%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 980px;
+      background: var(--panel);
+      border: 4px solid #5a421a;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .game-shell::before,
+    .game-shell::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(138, 106, 43, 0.55);
+      pointer-events: none;
+      border-radius: 12px;
+    }
+
+    .header {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(58,24,24,0.96), rgba(37,52,33,0.96));
+      color: #f8eed7;
+      padding: 24px 30px 26px;
+      border-bottom: 3px solid #7d5b21;
+    }
+
+    .header::after {
+      content: "✠     ❦     ✠     ❦     ✠";
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(239, 220, 171, 0.75);
+      letter-spacing: 10px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .crest-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .crest {
+      width: 72px;
+      height: 72px;
+      border: 2px solid rgba(244, 228, 194, 0.45);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.06);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+
+    .title-block {
+      flex: 1;
+      text-align: center;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: 0.04em;
+      font-variant: small-caps;
+    }
+
+    .title-block p {
+      margin: 8px 0 0;
+      color: #e9dcc0;
+      font-size: 1rem;
+    }
+
+    .content {
+      position: relative;
+      padding: 28px 30px 24px;
+      background:
+        radial-gradient(circle at top right, rgba(166,124,46,0.08), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(91,31,31,0.07), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
+    }
+
+    .scene-illustration {
+      width: 100%;
+      height: 230px;
+      margin: 0 0 20px;
+      border: 2px solid rgba(90,66,26,0.68);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #d8c29c;
+      box-shadow: inset 0 0 0 3px rgba(255,248,230,0.25);
+    }
+
+    .scene-card {
+      background: rgba(255, 249, 236, 0.82);
+      border: 1px solid rgba(125, 91, 33, 0.45);
+      border-radius: 14px;
+      padding: 22px 20px;
+      box-shadow: 0 8px 26px rgba(61, 40, 14, 0.08);
+    }
+
+    .scene-title {
+      margin: 0 0 12px;
+      font-size: 1.75rem;
+      color: #3a2615;
+      font-variant: small-caps;
+      letter-spacing: 0.02em;
+    }
+
+    .scene-text {
+      line-height: 1.86;
+      font-size: 1.06rem;
+      white-space: pre-line;
+      margin-bottom: 24px;
+    }
+
+    .stats-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .stats-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6d5031;
+      font-weight: bold;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stat-pill {
+      background: linear-gradient(180deg, #f2e6cb, #e3d0aa);
+      border: 1px solid #b08a43;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.92rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+
+    button.choice {
+      text-align: left;
+      border: 1px solid #9d7940;
+      background: linear-gradient(180deg, #fff6e6, #f3e4c4);
+      padding: 15px 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: #28190d;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 6px 14px rgba(55, 34, 10, 0.08);
+      position: relative;
+      line-height: 1.5;
+    }
+
+    button.choice::before {
+      content: "❧";
+      color: #7a5621;
+      margin-right: 10px;
+      display: inline-block;
+    }
+
+    button.choice:hover {
+      background: linear-gradient(180deg, #fffaf0, #ecd8b3);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(55, 34, 10, 0.12);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 0 30px 26px;
+      flex-wrap: wrap;
+    }
+
+    .scene-marker {
+      font-size: 0.92rem;
+      color: #62431d;
+      letter-spacing: 0.03em;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      border: 1px solid #8f6a30;
+      background: linear-gradient(180deg, #f7ecd4, #ead8b3);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      color: #2b1a0d;
+      box-shadow: 0 4px 10px rgba(55, 34, 10, 0.08);
+    }
+
+    .small-btn:hover { filter: brightness(1.03); }
+
+    .ending {
+      background: linear-gradient(180deg, #f3ead8, #e7d7b5);
+      border: 1px solid #8e6a2e;
+      border-left: 6px solid #6d2d23;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 18px;
+      box-shadow: 0 8px 18px rgba(61, 40, 14, 0.08);
+    }
+
+    .ending strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.08rem;
+      color: #4e241f;
+    }
+
+    .coming-soon {
+      background: rgba(255,248,230,0.72);
+      border: 1px dashed #9b7840;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 18px;
+      color: #50341a;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 14px; }
+      .crest { display: none; }
+      .title-block { text-align: left; }
+      .title-block h1 { font-size: 1.7rem; }
+      .content { padding: 18px; }
+      .scene-illustration { height: 170px; }
+      .footer { padding: 0 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="header">
+      <div class="crest-row">
+        <div class="crest" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="52" height="52">
+            <path d="M50 8 L80 18 L80 46 C80 66 67 82 50 92 C33 82 20 66 20 46 L20 18 Z" fill="#e7d39d" stroke="#b88a33" stroke-width="4"/>
+            <path d="M50 8 L50 92" stroke="#7e2a2a" stroke-width="6"/>
+            <path d="M20 36 L80 36" stroke="#7e2a2a" stroke-width="6"/>
+          </svg>
+        </div>
+        <div class="title-block">
+          <h1>Guigemar: Chivalry or Love</h1>
+          <p>A branching digital tale inspired by Marie de France’s <em>Guigemar</em>.</p>
+        </div>
+        <div class="crest" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="52" height="52">
+            <path d="M50 8 L80 18 L80 46 C80 66 67 82 50 92 C33 82 20 66 20 46 L20 18 Z" fill="#e7d39d" stroke="#b88a33" stroke-width="4"/>
+            <path d="M35 63 C48 46 60 38 67 26" stroke="#30472f" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M31 67 C33 57 40 47 50 39" stroke="#30472f" stroke-width="4" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="scene-illustration" id="scene-illustration"></div>
+
+      <div class="scene-card">
+        <h2 class="scene-title" id="scene-title"></h2>
+
+        <div class="stats-wrap">
+          <div class="stats-label">Knightly Measure</div>
+          <div class="stats" id="stats"></div>
+        </div>
+
+        <div class="scene-text" id="scene-text"></div>
+        <div class="choices" id="choices"></div>
+        <div id="ending-box"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div id="scene-id" class="scene-marker">Chapter: cover</div>
+      <div class="footer-actions">
+        <button class="small-btn" onclick="goBack()">◂ Return</button>
+        <button class="small-btn" onclick="restartGame()">↺ Begin Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      honor: 0,
+      love: 0,
+      fear: 0,
+      recklessness: 0,
+      history: []
+    };
+
+    const sceneArt = {
+      cover: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#d8c29c"/>
+          <rect x="90" y="30" width="720" height="240" rx="12" fill="#efe2bf" stroke="#8d6a2d" stroke-width="6"/>
+          <path d="M150 90 C170 72 188 72 208 90 C228 72 247 72 266 90" stroke="#7a2f33" stroke-width="5" fill="none"/>
+          <path d="M634 90 C654 72 672 72 692 90 C712 72 731 72 750 90" stroke="#30472f" stroke-width="5" fill="none"/>
+          <text x="450" y="105" font-size="22" text-anchor="middle" fill="#6d4a1f" font-family="Georgia">A Breton Lay Retold</text>
+          <text x="450" y="150" font-size="42" text-anchor="middle" fill="#5b1f1f" font-family="Georgia">Guigemar</text>
+          <text x="450" y="192" font-size="26" text-anchor="middle" fill="#30472f" font-family="Georgia">Chivalry or Love</text>
+          <text x="450" y="235" font-size="18" text-anchor="middle" fill="#6d4a1f" font-family="Georgia">Choose your path and shape the knight’s heart</text>
+        </svg>`,
+      p1: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#b79f74"/>
+          <rect y="205" width="900" height="95" fill="#546543"/>
+          <path d="M0 220 C180 190 292 196 400 207 C540 221 630 190 760 186 C818 184 857 188 900 180 L900 300 L0 300 Z" fill="#445535"/>
+          <path d="M650 205 C666 172 687 152 719 138 C752 124 793 126 828 143 C846 152 863 166 877 186" stroke="#3a2717" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <circle cx="775" cy="122" r="18" fill="#3a2717"/>
+          <path d="M757 141 L722 176 M793 142 L812 177" stroke="#3a2717" stroke-width="8" stroke-linecap="round"/>
+          <path d="M758 191 L730 230 M793 191 L807 232" stroke="#3a2717" stroke-width="8" stroke-linecap="round"/>
+          <rect x="98" y="70" width="180" height="110" fill="#6a5842"/>
+          <rect x="114" y="86" width="148" height="78" fill="#d8c9aa"/>
+          <path d="M210 205 L265 110 L320 205 Z" fill="#514332"/>
+        </svg>`,
+      p2_main: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#c0aa82"/>
+          <rect x="90" y="60" width="720" height="165" rx="10" fill="#7b674f"/>
+          <rect x="126" y="92" width="648" height="103" rx="8" fill="#ead9b4"/>
+          <circle cx="265" cy="142" r="18" fill="#47281e"/><circle cx="635" cy="142" r="18" fill="#47281e"/>
+          <path d="M247 158 L227 189 M283 158 L303 190" stroke="#47281e" stroke-width="8" stroke-linecap="round"/>
+          <path d="M617 158 L597 189 M653 158 L673 190" stroke="#47281e" stroke-width="8" stroke-linecap="round"/>
+          <path d="M227 186 Q265 162 303 186 L293 214 L237 214 Z" fill="#7a2f33"/>
+          <path d="M597 186 Q635 162 673 186 L663 214 L607 214 Z" fill="#30472f"/>
+          <path d="M376 146 Q450 103 524 146" stroke="#b48d38" stroke-width="6" fill="none"/>
+        </svg>`,
+      p2_chiv: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#a89469"/>
+          <rect y="220" width="900" height="80" fill="#4e5c3d"/>
+          <path d="M90 220 C170 150 245 108 321 92 C376 80 418 90 452 125 C416 132 389 160 370 195 C346 235 284 248 208 245 Z" fill="#ece6d9" stroke="#6a5841" stroke-width="4"/>
+          <circle cx="640" cy="112" r="20" fill="#321d12"/>
+          <path d="M622 131 L588 168 M658 131 L676 168" stroke="#321d12" stroke-width="8" stroke-linecap="round"/>
+          <path d="M622 178 L595 224 M657 178 L670 226" stroke="#321d12" stroke-width="8" stroke-linecap="round"/>
+        </svg>`,
+      p2_afraid: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#8e7d60"/>
+          <rect y="214" width="900" height="86" fill="#4a4437"/>
+          <path d="M0 220 C150 210 243 180 330 151 C388 132 436 127 494 148 C560 172 628 220 900 191 L900 300 L0 300 Z" fill="#5a6451"/>
+          <path d="M160 92 L208 270 M290 75 L256 272 M430 88 L378 276 M730 66 L692 270" stroke="#1f1811" stroke-width="10" opacity="0.75"/>
+          <circle cx="620" cy="134" r="18" fill="#2b2017"/>
+        </svg>`,
+      p2_reckless: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#9f8a63"/>
+          <rect y="215" width="900" height="85" fill="#4c5a3d"/>
+          <path d="M0 225 C160 195 250 190 370 208 C500 228 605 187 733 181 C800 177 850 183 900 174 L900 300 L0 300 Z" fill="#405036"/>
+          <path d="M150 230 C190 173 243 132 295 116 C335 104 365 111 392 136 C358 141 329 166 311 196 C290 229 243 244 196 243 Z" fill="#f3ede0" stroke="#69553c" stroke-width="4"/>
+          <path d="M444 160 L368 157" stroke="#6f4321" stroke-width="6"/>
+          <path d="M442 160 L486 145" stroke="#6f4321" stroke-width="4"/>
+          <path d="M445 160 L486 175" stroke="#6f4321" stroke-width="4"/>
+          <circle cx="602" cy="112" r="20" fill="#321d12"/>
+          <path d="M584 131 L545 168 M620 131 L638 171" stroke="#321d12" stroke-width="8" stroke-linecap="round"/>
+          <path d="M584 177 L556 224 M618 177 L632 227" stroke="#321d12" stroke-width="8" stroke-linecap="round"/>
+        </svg>`,
+      p3_ship: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="sea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#b79e74"/><stop offset="50%" stop-color="#7f8d8f"/><stop offset="100%" stop-color="#56676b"/></linearGradient></defs>
+          <rect width="900" height="300" fill="url(#sea)"/>
+          <rect y="185" width="900" height="115" fill="#617276"/>
+          <path d="M0 205 C73 195 139 219 225 212 C313 206 406 186 515 198 C615 209 726 231 900 200 L900 300 L0 300 Z" fill="#4d6167"/>
+          <path d="M330 190 L555 190 L515 230 L375 230 Z" fill="#5b3c22" stroke="#382111" stroke-width="4"/>
+          <rect x="414" y="96" width="18" height="94" fill="#4b3521"/>
+          <path d="M432 100 C508 116 541 143 559 187 L432 187 Z" fill="#efe3c8" stroke="#7a6544" stroke-width="3"/>
+          <path d="M414 113 C372 124 340 145 322 187 L414 187 Z" fill="#d8ccb3" stroke="#7a6544" stroke-width="3"/>
+          <circle cx="723" cy="72" r="36" fill="#e6ddc7" opacity="0.95"/>
+        </svg>`,
+      p3_wait: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#8c877b"/>
+          <rect y="188" width="900" height="112" fill="#656961"/>
+          <path d="M0 210 C110 203 202 220 320 209 C434 199 540 183 668 194 C748 201 818 213 900 206 L900 300 L0 300 Z" fill="#59605c"/>
+          <path d="M560 188 L720 188 L690 224 L588 224 Z" fill="#5b3c22" stroke="#382111" stroke-width="4"/>
+          <rect x="626" y="112" width="14" height="76" fill="#4b3521"/>
+          <path d="M640 116 C694 126 719 144 732 187 L640 187 Z" fill="#ddd4c0" stroke="#7a6544" stroke-width="3"/>
+          <circle cx="170" cy="160" r="18" fill="#2f2014"/>
+          <path d="M153 178 L132 212 M187 178 L203 214" stroke="#2f2014" stroke-width="8" stroke-linecap="round"/>
+          <path d="M153 220 L139 255 M186 220 L193 255" stroke="#2f2014" stroke-width="8" stroke-linecap="round"/>
+        </svg>`,
+      p4_call: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#b89f78"/>
+          <rect y="215" width="900" height="85" fill="#6d7b58"/>
+          <rect x="575" y="56" width="190" height="160" fill="#6a5842"/>
+          <rect x="605" y="92" width="56" height="78" fill="#d8c9aa"/>
+          <rect x="678" y="92" width="56" height="78" fill="#d8c9aa"/>
+          <rect x="96" y="174" width="188" height="42" fill="#5b3c22"/>
+          <path d="M285 174 C350 160 420 148 490 154 C535 158 568 169 595 185" stroke="#8c6a24" stroke-width="4" fill="none"/>
+          <circle cx="218" cy="155" r="17" fill="#3a2618"/>
+          <path d="M202 171 L180 200 M234 171 L251 201" stroke="#3a2618" stroke-width="8" stroke-linecap="round"/>
+          <path d="M180 196 Q217 171 252 196 L244 216 L189 216 Z" fill="#30472f"/>
+          <circle cx="678" cy="170" r="16" fill="#47281e"/>
+          <path d="M663 185 L646 210 M693 185 L709 211" stroke="#47281e" stroke-width="8" stroke-linecap="round"/>
+          <path d="M648 207 Q678 183 709 207 L703 226 L653 226 Z" fill="#7a2f33"/>
+        </svg>`,
+      p4_silent: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#ae9976"/>
+          <rect y="212" width="900" height="88" fill="#617055"/>
+          <rect x="560" y="50" width="220" height="166" fill="#6a5842"/>
+          <rect x="600" y="84" width="52" height="88" fill="#d8c9aa"/>
+          <rect x="687" y="84" width="52" height="88" fill="#d8c9aa"/>
+          <path d="M130 194 L286 194 L255 228 L160 228 Z" fill="#5b3c22" stroke="#382111" stroke-width="4"/>
+          <rect x="195" y="123" width="13" height="71" fill="#4b3521"/>
+          <path d="M208 128 C247 137 266 152 278 193 L208 193 Z" fill="#e7dcc5" stroke="#7a6544" stroke-width="3"/>
+          <circle cx="675" cy="170" r="14" fill="#47281e"/>
+          <circle cx="717" cy="182" r="12" fill="#47281e"/>
+        </svg>`,
+      p5_truth: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#c2ac87"/>
+          <rect y="220" width="900" height="80" fill="#665740"/>
+          <circle cx="320" cy="126" r="18" fill="#3b2517"/>
+          <path d="M303 143 L280 178 M336 143 L354 178" stroke="#3b2517" stroke-width="8" stroke-linecap="round"/>
+          <path d="M280 173 Q320 146 360 173 L350 235 L292 235 Z" fill="#304b2f"/>
+          <circle cx="560" cy="120" r="17" fill="#47281e"/>
+          <path d="M544 136 L525 172 M576 136 L593 172" stroke="#47281e" stroke-width="8" stroke-linecap="round"/>
+          <path d="M526 168 Q560 145 594 168 L583 236 L538 236 Z" fill="#7a2f33"/>
+          <path d="M380 150 Q440 125 500 150" stroke="#a67c2e" stroke-width="4" fill="none"/>
+        </svg>`,
+      p5_guarded: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#b39a73"/>
+          <rect y="220" width="900" height="80" fill="#685944"/>
+          <circle cx="350" cy="126" r="18" fill="#3b2517"/>
+          <path d="M333 143 L312 178 M366 143 L383 178" stroke="#3b2517" stroke-width="8" stroke-linecap="round"/>
+          <path d="M312 173 Q350 148 388 173 L379 235 L321 235 Z" fill="#355034"/>
+          <circle cx="540" cy="121" r="17" fill="#47281e"/>
+          <path d="M524 137 L506 171 M556 137 L573 171" stroke="#47281e" stroke-width="8" stroke-linecap="round"/>
+          <path d="M507 168 Q540 146 573 168 L563 236 L518 236 Z" fill="#6d2d23"/>
+          <path d="M420 118 L470 118 L470 206 L420 206 Z" fill="none" stroke="#8c6a24" stroke-width="4"/>
+        </svg>`,
+      p6_oath: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#c7b089"/>
+          <rect y="220" width="900" height="80" fill="#6f5f49"/>
+          <circle cx="305" cy="120" r="17" fill="#3b2517"/>
+          <path d="M290 136 L270 170 M320 136 L338 170" stroke="#3b2517" stroke-width="8"/>
+          <path d="M270 168 Q305 144 340 168 L332 235 L279 235 Z" fill="#304b2f"/>
+          <circle cx="585" cy="118" r="16" fill="#47281e"/>
+          <path d="M570 133 L552 167 M600 133 L617 167" stroke="#47281e" stroke-width="8"/>
+          <path d="M553 165 Q585 143 617 165 L608 236 L563 236 Z" fill="#7a2f33"/>
+          <path d="M360 154 Q445 110 530 154" stroke="#a67c2e" stroke-width="5" fill="none"/>
+        </svg>`,
+      p6_tokens: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#cdb68f"/>
+          <rect y="220" width="900" height="80" fill="#75624d"/>
+          <circle cx="322" cy="122" r="17" fill="#3b2517"/>
+          <path d="M307 138 L287 172 M337 138 L355 172" stroke="#3b2517" stroke-width="8"/>
+          <path d="M287 169 Q322 145 357 169 L348 236 L297 236 Z" fill="#304b2f"/>
+          <circle cx="565" cy="118" r="16" fill="#47281e"/>
+          <path d="M550 133 L533 167 M580 133 L597 167" stroke="#47281e" stroke-width="8"/>
+          <path d="M534 165 Q565 143 596 165 L587 236 L543 236 Z" fill="#7a2f33"/>
+          <path d="M430 168 L430 132 L460 117 L490 132 L490 168 L460 186 Z" fill="#d7b85f" stroke="#8c6a24" stroke-width="4"/>
+        </svg>`,
+      p7_fight: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#9e8b69"/>
+          <rect y="220" width="900" height="80" fill="#5a4d3a"/>
+          <path d="M110 220 L250 70 L392 220 Z" fill="#4b4033"/>
+          <circle cx="420" cy="120" r="18" fill="#2f1d12"/>
+          <path d="M403 137 L378 170 M438 137 L458 170" stroke="#2f1d12" stroke-width="8"/>
+          <path d="M403 178 L388 226 M438 178 L448 226" stroke="#2f1d12" stroke-width="8"/>
+          <circle cx="560" cy="121" r="17" fill="#2f1d12"/>
+          <path d="M545 138 L526 170 M575 138 L593 170" stroke="#2f1d12" stroke-width="8"/>
+          <path d="M485 212 C510 180 540 162 575 150" stroke="#7a2f33" stroke-width="5" fill="none"/>
+        </svg>`,
+      p7_trust: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#9d8d71"/>
+          <rect y="220" width="900" height="80" fill="#5d5347"/>
+          <path d="M120 195 L290 195 L255 230 L150 230 Z" fill="#5b3c22" stroke="#382111" stroke-width="4"/>
+          <rect x="190" y="130" width="14" height="65" fill="#4b3521"/>
+          <path d="M204 133 C250 143 278 158 290 194 L204 194 Z" fill="#efe3c8" stroke="#7a6544" stroke-width="3"/>
+          <circle cx="640" cy="118" r="18" fill="#47281e"/>
+          <path d="M624 136 L602 170 M656 136 L674 170" stroke="#47281e" stroke-width="8"/>
+          <path d="M603 168 Q640 143 677 168 L668 235 L611 235 Z" fill="#30472f"/>
+        </svg>`,
+      p7_sep: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="900" height="300" fill="#8f7e62"/>
+          <rect y="215" width="900" height="85" fill="#5c5b66"/>
+          <path d="M0 210 C170 180 260 208 390 206 C520 204 638 176 900 194 L900 300 L0 300 Z" fill="#4a5965"/>
+          <path d="M115 205 L285 205 L250 238 L145 238 Z" fill="#5b3c22"/>
+          <rect x="186" y="136" width="14" height="69" fill="#4b3521"/>
+          <path d="M200 140 C244 149 269 165 282 204 L200 204 Z" fill="#efe3c8"/>
+          <circle cx="690" cy="173" r="16" fill="#47281e"/>
+          <path d="M675 188 L657 213 M705 188 L721 214" stroke="#47281e" stroke-width="8"/>
+          <path d="M659 211 Q690 187 720 211 L714 229 L666 229 Z" fill="#7a2f33"/>
+        </svg>`,
+      p8_main: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect width="900" height="300" fill="#d3be95"/><rect x="90" y="35" width="720" height="230" rx="10" fill="#efe2bf" stroke="#8d6a2d" stroke-width="6"/><text x="450" y="135" font-size="34" text-anchor="middle" fill="#5b1f1f" font-family="Georgia">The Voyage Continues</text><text x="450" y="180" font-size="20" text-anchor="middle" fill="#30472f" font-family="Georgia">Phase II complete</text></svg>`
+    };
+
+    const scenes = {
+      cover: {
+        title: "A Breton Tale Begins",
+        text: `Hear now a tale carried from court to court and from chamber to chamber, a tale of bright arms, hidden sorrow, and a wound no physician could mend.
+
+You are Guigemar, son of a noble house in Brittany, praised in tournaments, feared in battle, and beloved by your lord for your steadfast service. Your name travels faster than banners in the wind. Men call you brave. Women call you handsome. Yet those who speak most warmly of you do so with one note of wonder: no glance has ever mastered your heart.
+
+You have served honor, victory, and reputation. Love has remained to you a foreign country.
+
+Tonight the hall is lit, the wine is poured, and the harpers tune their strings. Before dawn breaks fully over your life, the course of your story may change forever.`,
+        choices: [{ text: "Open the chronicle and enter the tale.", next: "p1", effect: {} }]
+      },
+      p1: {
+        title: "The Knight Without Love",
+        text: `The feast prepared by your lord glows with all the splendor of noble life. Tapestries ripple in the torchlight. Silver cups pass from hand to hand. Ladies in silk and fine embroidery move beneath music as though the hall itself had become a page from some courtly dream.
+
+You stand among them admired, greeted with laughter, praise, and invitation. More than one noble household would gladly bind itself to yours by marriage, and more than one maiden watches to see where your gaze might fall. Yet as you move through the hall, the truth settles upon you with the same old stillness. Beauty surrounds you, but nothing within you answers it.
+
+You are not cruel, nor proud in the shallow sense. It is simply that desire has never taken hold of you. Where other knights are undone by a ribbon, a voice, a face glimpsed through candlelight, you remain untouched. Sometimes you have wondered whether this is freedom. At other times it feels uncomfortably like absence.
+
+Before the feast reaches its height, a restlessness comes over you. The air feels thick. The songs seem meant for some other man. Outside, the night stretches toward the forest, and beyond it the long silence of dawn.
+
+Will you remain in the glittering court and see whether anything at all may stir in you at last, or will you slip from the feast and turn instead toward the solitude of the hunt?`,
+        choices: [
+          { text: "Attend the feast and test whether courtly beauty can move your heart.", next: "p2_main", effect: { honor: 1 } },
+          { text: "Leave before dawn and hunt alone, trusting action more than ceremony.", next: "p2_reckless", effect: { recklessness: 1 } },
+          { text: "Withdraw quietly from the hall, uneasy at the emptiness you feel.", next: "p2_afraid", effect: { fear: 1 } },
+          { text: "Remain with courtesy, but observe all with a disciplined knight’s distance.", next: "p2_chiv", effect: { honor: 1 } }
+        ]
+      },
+      p2_main: {
+        title: "The Empty Feast",
+        text: `You remain.
+
+The harpers play sweeter. Dancers cross the rush-strewn floor in turning patterns of color and gold. A lady speaks to you with practiced grace; another laughs softly at some remark made in passing; a third, bolder than the rest, asks whether the finest knight in Brittany has sworn his heart already to some secret beloved. You answer them all with kindness. You offend no one. Yet when each moment passes, you feel only the same cold clarity: your heart is as unstirred as stone beneath winter rain.
+
+At last the feast becomes unbearable not because it is unpleasant, but because it reveals too plainly what is missing. You leave by a side passage while music still rises behind you. The corridors are dim, the air outside sharp and clean. In the stable yard your horse tosses its head as if relieved to see you choose motion over pageantry.
+
+By the time the eastern sky pales, you are riding beneath the trees. The forest receives you with dew, shadow, and silence. There, removed from all courts and expectations, your thoughts settle into the rhythm of hoofbeats.
+
+Then, in a clearing touched by pale morning light, you see an astonishing sight: a white hind, bright as if carved from moonlight, standing beside her fawn. She turns and fixes you with a gaze too steady, too knowing, for any mortal beast.
+
+The hunt is before you now.`,
+        choices: [{ text: "Nock an arrow and pursue the hind into the deep wood.", next: "p3_ship", effect: { honor: 1 } }]
+      },
+      p2_chiv: {
+        title: "Courtesy Without Heat",
+        text: `You remain in the hall because it is expected of you, and because expectation is a thing you have always borne well. You dance when invited. You speak with measured generosity. You offer your arm to noble ladies and your attention to their words. Every gesture is proper. Every answer is polished. If love is a courtly discipline to be learned through patience and decorum, then no man should be better prepared than you.
+
+Yet the more carefully you perform the rites of court, the more deeply you understand that performance is all it is. You admire beauty without longing for it. You esteem wit without being captured by it. You leave each exchange precisely as you entered it: calm, respected, and untouched.
+
+At length you begin to feel that remaining longer would be dishonest, though no lie has been spoken. So you take your leave with flawless courtesy, refusing to disturb the merriment. Outside, your breath clouds in the cold before dawn. You mount and ride not from anger, but from the instinct that truth is more easily found in lonely places than in halls built for appearances.
+
+The forest opens around you by slow degrees. Birds stir overhead. A brook murmurs beneath fern and root. Then the undergrowth parts, and before you stands a hind of such whiteness and composure that even your trained hand pauses.
+
+Something sacred seems to hover about the creature. Yet you are a knight, and the hunt has always answered where feeling has not.`,
+        choices: [{ text: "Approach the hind with solemn care and let the hunt begin.", next: "p3_ship", effect: { honor: 1 } }]
+      },
+      p2_afraid: {
+        title: "The Unease Beneath Silence",
+        text: `You slip from the feast not in pride, but in discomfort. The music is beautiful, yet it presses on you like a question you cannot answer. Around you everyone seems to know the language of longing, admiration, flirtation, and promise. You alone remain outside it, and though no one openly rebukes you for this, tonight the difference feels sharper than before.
+
+You walk the dark edge of the courtyard for a time before saddling your horse. The world before dawn is not warm, but it is mercifully honest. There are no watching eyes in the forest, no expectation that you should desire what others desire. Even so, an unease follows you beneath the trees. The silence seems larger than usual. Your thoughts turn again and again to one unsettling possibility: perhaps what is absent in you is not a strength, but a lack that fate itself may someday punish.
+
+A sudden movement halts your horse. Ahead in a clearing stands a white hind beside her young. She is no common quarry. Her stillness is too complete. Her pale body almost shines among the roots and leaves, and for one strange instant you consider turning back.
+
+But whether from pride, curiosity, or the unwillingness to appear fearful even before a beast, you reach for your weapon.
+
+The forest seems to hold its breath.`,
+        choices: [{ text: "Steady yourself and loose the shot despite your misgivings.", next: "p3_ship", effect: { fear: 1 } }]
+      },
+      p2_reckless: {
+        title: "The Enchanted Hunt",
+        text: `You leave the hall before dawn like a man escaping a prison made of velvet and gold. Courtly songs, sidelong glances, and talk of marriage mean nothing to you. Let others chase affection in candlelit rooms; you would rather meet the day with cold air in your lungs and the clean certainty of pursuit before you.
+
+The forest answers your mood at once. You ride hard. Branches lash past your shoulders. Your horse crashes through fern and shadow while the sun struggles to reach the ground beneath the trees. Then, all at once, movement flashes ahead: a white hind, impossibly bright, nursing a fawn in a clearing.
+
+Without waiting for omen or reflection, you draw and fire.
+
+The arrow strikes true—or seems to. In the same instant, a violent pain tears through your thigh. Your own shot has turned against you. You pitch sideways, clutching at blood and saddle leather, and the whole wood seems to shift around you.
+
+The hind lifts her head. Dying, she speaks in a voice no mortal animal should possess.
+
+She tells you that as you have wounded her, so too shall you be wounded beyond the help of medicine. Only a woman who suffers for love of you, and for whom you suffer in return, will bring healing to this hurt. Then her head falls, and the clearing is silent save for your ragged breathing.
+
+Bleeding, shaken, and half-convinced you wander inside a curse, you press onward. Through the trees you begin to hear another sound: not wind, not river, but the far rhythm of the sea. Drawn by pain and wonder alike, you follow it to the shore.
+
+There, waiting on the water as if set there for you alone, lies a splendid ship under black rigging and rich cloths—yet no sailor, no master, no living soul is aboard.`,
+        choices: [
+          { text: "Board the unmanned ship at once. Fate has chosen; delay is useless.", next: "p3_ship", effect: { recklessness: 1, love: 1 } },
+          { text: "Remain on the shore and wait, unwilling to trust such sorcery immediately.", next: "p3_wait", effect: { fear: 1 } }
+        ]
+      },
+      p3_wait: {
+        title: "The Shore of Hesitation",
+        text: `You remain upon the strand, one hand pressed hard against your wound, your eyes never leaving the silent vessel. It is too beautiful to be natural and too still to be ordinary. Curtains stir though no helmsman stands at the stern. The hull glimmers darkly. Rich coverings can be glimpsed within, as though the ship were made less for trade or war than for some noble passenger hidden from the world.
+
+Minutes pass. Then more. No one comes.
+
+Your leg weakens beneath you. Blood darkens the sand. The sea wind bites through your clothes, and every pulse of pain recalls the hind’s prophecy. If you return home now, what awaits you? A physician’s hands, perhaps. Bandages. Questions. But not healing—not if the creature spoke truth. And some deep part of you knows, with the grim certainty of things foretold, that it did.
+
+At last the waiting itself becomes absurd. The ship has come for no one else. Whether it is a mercy or a trap, it is yours.
+
+Gathering the last of your strength, you step from shore to deck. The instant your weight settles upon the boards, the vessel moves. No oar dips. No sail is raised. Yet the ship turns from land as obediently as a hawk answering its master’s glove.
+
+You have chosen.`,
+        choices: [{ text: "Let the silent vessel bear you wherever fate intends.", next: "p3_ship", effect: { honor: 1 } }]
+      },
+      p3_ship: {
+        title: "The Ship Without a Crew",
+        text: `Whether by boldness, discipline, desperation, or simple surrender, you come at last aboard the mysterious vessel. No footsteps answer yours. No rope creaks in the hands of sailors. Yet all is furnished as if for a prince: carved wood polished like dark glass, embroidered cushions, fine coverlets, a chamber hung with rich cloth, and a bed prepared as though someone expected your arrival before you yourself believed in it.
+
+Your wound burns like iron in the flesh. When you try to stand upright, the deck sways beneath you, and not only because of the sea. The words of the white hind return again and again. A woman who suffers for love of you. A wound answered only by love. You, who have lived untouched by that very force, now find your life hanging upon it.
+
+The ship glides outward over gray water, silent as enchantment. The shore dwindles. Above, the sky opens broad and pale, while the sea keeps its counsel. You do not know whether you have entered a blessing or a doom.
+
+At length the vessel reaches another shore. Before you rises a high wall of pale stone, and beyond it a garden so green and enclosed that it seems withdrawn from the ordinary world. You hear the faint movement of voices within, women’s voices, low and measured. Your strength is failing. If you do not seek aid soon, the sea itself may be the last witness to your story.
+
+Will you call out and trust yourself to whoever dwells within, or keep silence and allow fate to place you where it wills?`,
+        choices: [
+          { text: "Call out to the women beyond the garden wall and ask for help openly.", next: "p4_call", effect: { honor: 1 } },
+          { text: "Remain silent and let weakness overtake you. If this is fate, let it come unforced.", next: "p4_silent", effect: { fear: 1 } }
+        ]
+      },
+      p4_call: {
+        title: "The Garden Discovered",
+        text: `You gather what remains of your strength and call out across the stillness. The sound startles even you, for your voice has thinned with loss of blood and long uncertainty. For a moment nothing answers. Then figures appear among the green paths of the enclosed garden: a noble lady of striking beauty, and beside her an older woman whose watchful eyes miss little.
+
+The younger woman pauses when she sees you. Her first expression is alarm; her second, something more difficult to name. Pity, perhaps. Or wonder. You must appear a strange sight indeed: a wounded knight upon a ship without a crew, come ashore at a garden no ordinary traveler could find.
+
+The older woman bids servants be fetched, but the lady herself comes nearer before they arrive. She studies your wound and asks, with grave courtesy, who you are and how such a thing has happened. In her voice there is no mockery, only intelligence and restraint.
+
+You are carried from the vessel and brought into the garden. The air there is fragrant with herbs, fruit, and flowers trained along pale walls. Yet beneath the beauty you sense confinement. This is not a place merely kept—it is a place enclosed.
+
+As attendants work to dress your wound, the lady remains nearby, and more than once you catch her gaze upon you.`,
+        choices: [
+          { text: "Tell her the truth of the white hind, the curse, and the strange ship.", next: "p5_truth", effect: { love: 1 } },
+          { text: "Conceal the prophecy and give only a guarded account of your injury.", next: "p5_guarded", effect: { honor: 1 } },
+          { text: "Speak little, uncertain whether trust here will save you or endanger you.", next: "p5_guarded", effect: { fear: 1 } }
+        ]
+      },
+      p4_silent: {
+        title: "Fate Finds You Sleeping",
+        text: `You do not call out. The effort feels too great, and perhaps some deeper instinct stays your tongue. Instead you sink within the curtained chamber of the ship and surrender yourself to weakness. The boards sway gently beneath you. Salt air mingles with the perfume of the rich fabrics about the bed. It seems less a vessel than a floating chamber prepared for a story already written.
+
+When next you wake, daylight has shifted. You are no longer alone. A noble lady stands at a short distance, her face composed though clearly stirred by what she has found, and beside her an elderly companion watches with prudent suspicion. Servants move quietly in the background, uncertain whether you are guest, patient, or omen.
+
+The lady tells you that the ship drifted to their shore without pilot or banner and that no man was found upon it save you. She asks whether you are in pain. There is gentleness in the question, but also discipline. She is no foolish maiden given to panic. She measures before she yields.
+
+You are led from the vessel into a walled garden and from there into chambers where your wound can be tended. The place is beautiful, yet its beauty is narrowed by seclusion. You begin to understand that the lady herself may live here less by choice than by arrangement.
+
+As your senses steady, so too does hers upon you. She watches as though trying to decide whether your arrival is accident, enchantment, or answer.`,
+        choices: [
+          { text: "Reward her care with full honesty and confess the curse laid upon you.", next: "p5_truth", effect: { love: 1 } },
+          { text: "Thank her, but keep the strangest parts of your tale hidden for now.", next: "p5_guarded", effect: { honor: 1 } },
+          { text: "Remain cautious and reveal only what necessity requires.", next: "p5_guarded", effect: { fear: 1 } }
+        ]
+      },
+      p5_truth: {
+        title: "Truth Beside the Bed",
+        text: `As the days pass, your strength begins to return. The lady visits often, sometimes beneath the pretense of courtesy, sometimes with no pretense at all. She is intelligent, restrained, and touched by sadness that no fine clothing can conceal. From careful conversation you learn what the walls already suggested: she is wife to an older lord, a jealous man who values possession more than companionship. The garden is fair, but it is also a kind of prison.
+
+At last, when she asks again how you came to such a place, you decide that concealment would be an insult to the strange mercy that has passed between you. You tell her everything: the feast, the white hind, the rebounding arrow, the prophecy that only mutual love can heal you, and the silent ship that bore you here.
+
+She does not laugh. She does not turn away. Instead she falls into stillness, and in that stillness you see that your words have reached her not as fantasy, but as danger. If the prophecy is true, then your healing is tied to her heart as surely as your wound is tied to your flesh.
+
+From that day onward the air between you changes. A tenderness grows there, no longer vague, no longer deniable. She lingers. You wait for her steps. The old ache in your leg lessens even as another kind of pain begins—the sweet and terrible one of wanting what cannot safely be wanted.
+
+Now she asks whether you believe words alone are enough to bind two souls against time, distance, and the malice of men.`,
+        choices: [
+          { text: "Swear yourselves by spoken oath alone, trusting honor more than objects.", next: "p6_oath", effect: { honor: 2, love: 1 } },
+          { text: "Exchange tokens—a knot and a belt—so that recognition may outlast separation.", next: "p6_tokens", effect: { love: 2 } },
+          { text: "Hesitate, fearing that formal vows may make coming loss harder to bear.", next: "p6_oath", effect: { fear: 1 } }
+        ]
+      },
+      p5_guarded: {
+        title: "A Guarded Recovery",
+        text: `Your wound is tended with skill, and under the lady’s care your strength slowly returns. Even had you wished to remain distant, the place itself would have worked against you. The garden is intimate by design: quiet paths, enclosed orchards, shaded walks where two people may speak more honestly than they intended. The lady comes often, at first from duty, later from inclination. Her mind is quick, her manner composed, and beneath her grace you sense a weariness born not of weakness but of endurance.
+
+You do not tell her everything. Whether from caution, pride, or the lingering sense that your story is too strange to entrust to another, you soften the truth. You speak of a hunting wound, a chance misfortune, and the mysterious ship, but keep the doe’s prophecy veiled or omit it entirely. She accepts your account, yet you cannot help noticing moments when her eyes rest on you as though aware that part of the tale remains in shadow.
+
+Even so, affection grows. It grows not through confession alone, but through presence: shared meals, quiet speech, the relief of being understood without needing to perform. You begin to heal. She begins to hope. Yet the guardedness between you gives your tenderness a different texture—less surrender, more careful testing.
+
+One evening, as light fades against the stone, she asks what pledge a knight values most when absence and danger threaten to divide what has only just begun.
+
+Her question is gentle. Its meaning is not.`,
+        choices: [
+          { text: "Offer your knightly word as the purest pledge, and ask the same of her.", next: "p6_oath", effect: { honor: 2 } },
+          { text: "Suggest tokens that only the two of you may understand and prove.", next: "p6_tokens", effect: { love: 1, honor: 1 } },
+          { text: "Delay your answer, unsure whether promises can survive such a place.", next: "p6_oath", effect: { fear: 1 } }
+        ]
+      },
+      p6_oath: {
+        title: "Words Bound by Honor",
+        text: `You take her hands and swear by your honor, your lineage, and the truth of your soul that you will not forget her while memory remains in you. She answers in turn that whatever fate has done to bring you to her shore, it has not done so vainly. No priest stands beside you. No court hears the words. Yet the solemnity of the moment is not diminished by secrecy; if anything, it is sharpened by it.
+
+For a few days afterward your happiness seems almost possible. You walk together in the garden when servants may be dismissed. You speak of lands beyond the sea and lives that might have been. Once, in the fading light, she rests her head briefly against your shoulder, and the motion is so trusting that you feel both blessed and condemned.
+
+But spoken vows, however sincere, cannot silence the world outside them. The jealous lord who holds this place begins to suspect that the change in his household has a cause. Doors are watched more closely. Steps are counted. The old companion grows anxious. A pressure builds, as though the walls themselves were listening.
+
+Then comes the day when your peace is shattered. Voices rise. Men enter. The lady is pulled from you. You are seized before you can properly arm yourself. Though your wound is nearly healed, your situation is desperate.
+
+As you are dragged toward the shore and the waiting vessel, you must decide whether to resist openly or yield to necessity and trust that your vow will survive the separation forced upon you.`,
+        choices: [
+          { text: "Fight the lord’s men and refuse to be taken silently from her side.", next: "p7_fight", effect: { recklessness: 1, honor: 1 } },
+          { text: "Go without struggle, believing patience may preserve what violence cannot.", next: "p7_trust", effect: { honor: 1, fear: 1 } }
+        ]
+      },
+      p6_tokens: {
+        title: "Tokens Against Forgetting",
+        text: `You decide that love so strange and imperiled must leave some visible trace. Words are sacred, yes, but words may be denied, forgotten, or drowned out by distance. So together you fashion pledges that memory alone cannot counterfeit.
+
+She ties upon your garments a fastening no woman but she will be able to loose. In return, you help knot her shift in such a way that no man save you may undo it. The exchange is tender, solemn, and touched with the intimate gravity of ritual. In that moment your love ceases to be only feeling and becomes sign, test, and future proof against false claim.
+
+Afterward your joy is deeper because it now carries shape. The garden seems brighter; your wound eases more quickly; even silence between you becomes full rather than uncertain. Yet with that deepening comes danger. If such tokens must someday be proved, then someday separation must also be imagined—and that thought moves like a shadow at the edge of every happiness.
+
+The shadow soon becomes real. The old lord’s suspicion hardens into certainty. Servants are questioned. Passages are watched. One evening, before plans can be made, armed men burst in and seize you. She cries out, but cannot reach you. The tokens remain, yet the moment that was meant to preserve love now becomes the measure of its trial.
+
+You are dragged toward the ship that first brought you here. Men shout. Hands strike. The shore is near. There is scarcely time to choose.
+
+Will you struggle and risk death for one last attempt to remain, or submit and trust the tokens to guide you back to one another in time?`,
+        choices: [
+          { text: "Fight with all the strength you have left. Better blood than passive loss.", next: "p7_fight", effect: { recklessness: 2, love: 1 } },
+          { text: "Go quietly and trust the tokens, the vows, and fate itself to work in time.", next: "p7_trust", effect: { love: 1, honor: 1 } }
+        ]
+      },
+      p7_fight: {
+        title: "Violence at the Shore",
+        text: `You wrench yourself against the men who hold you and strike one hard enough to stagger him backward into the surf. For a moment the chaos opens. You seize another by the arm, drive him down, and lunge toward the lady. She reaches for you, but the distance between your hands is filled at once by more bodies, more shouting, more force than one wounded knight can overcome.
+
+Blows fall. Someone seizes you from behind. Another tears your sword away before you can fully draw it. In another setting, upon open ground with mail upon your shoulders and horse beneath you, perhaps the tale would end differently. But here, half-healed, surrounded, and hemmed between wall and sea, courage alone cannot unmake circumstance.
+
+The lady cries out your name—or nearly does—and that sound wounds you more sharply than any hand laid upon your body. You understand in bitter clarity that to continue resisting now is no longer to defend hope, but to risk being killed where she can see it.
+
+At last you are forced aboard. The ship drifts from the shore before either of you can speak more than fragments. She stands pale against the stone. You stand upon the deck with bruised mouth and bloodied hands. Between you lies the widening water.
+
+No victory is won. Yet neither is your love broken. What has happened now must become trial rather than ending.`,
+        choices: [{ text: "Endure the separation and let grief shape what comes next.", next: "p7_sep", effect: { recklessness: 1 } }]
+      },
+      p7_trust: {
+        title: "The Bitter Discipline of Departure",
+        text: `You do not waste your strength in useless struggle. That choice feels at first like cowardice, then like torment, and finally like the hardest discipline you have ever known. The men force you toward the shore while the lady strains against those who hold her back. You look at her once, fully, and try to place in that single glance everything words cannot now carry: devotion, grief, promise, and the plea that she remember the sign between you.
+
+It is not easy to go quietly. Every instinct in you revolts against it. But the memory of your pledge steadies you. If you die here, all ends. If you live, then time remains—and with time, possibility.
+
+So you board the ship as one condemned, not because you have ceased to love, but because you love enough to preserve what small chance the future still allows. The vessel moves almost at once. Water widens between shore and self. The lady does not cry out wildly; instead she stands rigid and stricken, as though holding herself upright by sheer force of will. The sight of her thus contained in suffering will remain with you long after the coast is gone.
+
+As the garden and its walls diminish behind mist and distance, you come to understand that your wound in the flesh was only the beginning. This second wound, the wound of parting, is deeper and more dangerous because no hand can bandage it.
+
+Yet if vows have any power, if tokens have any meaning, then this is not the end.`,
+        choices: [{ text: "Return across the sea and bear the grief that follows separation.", next: "p7_sep", effect: { honor: 1 } }]
+      },
+      p7_sep: {
+        title: "Separation",
+        text: `The sea carries you away from the enclosed garden, the lady, and the only love that has ever entered your life with enough force to change it. By the time you reach your own land, the wound in your thigh has all but healed—but in its place remains a sharper injury, one that no herb, no surgeon, and no knightly discipline can wholly master.
+
+You are received as before with honor. Men praise your return. Great households continue to regard you as a prize among knights. Yet those who once wondered why no woman had moved you now begin to read another truth in your face: something has happened, and whatever it was, it did not leave you whole.
+
+You cannot remain forever in this first sorrow. Time will move whether welcomed or not, and rumor, politics, desire, and chance will soon begin to draw both you and the lady toward new trials. The story is not broken here. It only deepens.
+
+Phase II ends with the parting. Ahead lie grief, false offers of comfort, the lady’s escape, Meriaduc’s court, recognition, and the reckoning that must follow.
+
+The chronicle closes for now on the image of water widening between two lovers who have not yet spoken their final word.`,
+        choices: [{ text: "Begin again from the start, or wait for the next chapter.", next: "p8_main", effect: {} }]
+      },
+      p8_main: {
+        title: "Phase II Complete",
+        text: `You have now played through the second movement of the story: arrival at the garden, discovery by the Lady, confession or concealment, vows and tokens, and the forced separation that sends Guigemar back across the sea.
+
+Phase III will continue with grief, rumor, pursuit, Meriaduc’s court, recognition, war, and the branching endings.
+
+For now, the tale pauses in sorrow.`,
+        choices: [{ text: "Return to the cover.", next: "cover", effect: {} }]
+      }
+    };
+
+    function applyEffect(effect = {}) {
+      Object.keys(effect).forEach(key => {
+        if (typeof state[key] === 'number') state[key] += effect[key];
+      });
+    }
+
+    let currentScene = 'cover';
+
+    function renderScene(sceneId) {
+      currentScene = sceneId;
+      const scene = scenes[sceneId];
+      const titleEl = document.getElementById('scene-title');
+      const textEl = document.getElementById('scene-text');
+      const choicesEl = document.getElementById('choices');
+      const statsEl = document.getElementById('stats');
+      const endingBox = document.getElementById('ending-box');
+      const sceneIdEl = document.getElementById('scene-id');
+      const illustrationEl = document.getElementById('scene-illustration');
+
+      titleEl.textContent = scene.title;
+      textEl.textContent = scene.text;
+      choicesEl.innerHTML = '';
+      endingBox.innerHTML = '';
+      sceneIdEl.textContent = `Chapter: ${sceneId.replaceAll('_', ' ')}`;
+      illustrationEl.innerHTML = sceneArt[sceneId] || sceneArt.cover;
+
+      statsEl.innerHTML = `
+        <div class="stat-pill">Honor: ${state.honor}</div>
+        <div class="stat-pill">Love: ${state.love}</div>
+        <div class="stat-pill">Fear: ${state.fear}</div>
+        <div class="stat-pill">Recklessness: ${state.recklessness}</div>
+      `;
+
+      scene.choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.className = 'choice';
+        button.textContent = choice.text;
+        button.onclick = () => {
+          state.history.push({ scene: currentScene, snapshot: { ...state } });
+          applyEffect(choice.effect || {});
+          renderScene(choice.next);
+        };
+        choicesEl.appendChild(button);
+      });
+    }
+
+    function goBack() {
+      if (!state.history.length) return;
+      const previous = state.history.pop();
+      state.honor = previous.snapshot.honor;
+      state.love = previous.snapshot.love;
+      state.fear = previous.snapshot.fear;
+      state.recklessness = previous.snapshot.recklessness;
+      renderScene(previous.scene);
+    }
+
+    function restartGame() {
+      state.honor = 0;
+      state.love = 0;
+      state.fear = 0;
+      state.recklessness = 0;
+      state.history = [];
+      renderScene('cover');
+    }
+
+    renderScene('cover');
+  </script>
+</body>
+</html>
