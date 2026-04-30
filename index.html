@@ -560,7 +560,9 @@
           <path d="M659 211 Q690 187 720 211 L714 229 L666 229 Z" fill="#7a2f33"/>
         </svg>`,
       p8_main: `
-        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect width="900" height="300" fill="#d3be95"/><rect x="90" y="35" width="720" height="230" rx="10" fill="#efe2bf" stroke="#8d6a2d" stroke-width="6"/><text x="450" y="135" font-size="34" text-anchor="middle" fill="#5b1f1f" font-family="Georgia">The Voyage Continues</text><text x="450" y="180" font-size="20" text-anchor="middle" fill="#30472f" font-family="Georgia">Phase II complete</text></svg>`
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect width="900" height="300" fill="#d3be95"/><rect x="90" y="35" width="720" height="230" rx="10" fill="#efe2bf" stroke="#8d6a2d" stroke-width="6"/><text x="450" y="135" font-size="34" text-anchor="middle" fill="#5b1f1f" font-family="Georgia">The Voyage Continues</text><text x="450" y="180" font-size="20" text-anchor="middle" fill="#30472f" font-family="Georgia">Phase II complete</text></svg>`,
+      score_summary: `
+        <svg viewBox="0 0 900 300" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><rect width="900" height="300" fill="#d3be95"/><rect x="90" y="35" width="720" height="230" rx="10" fill="#efe2bf" stroke="#8d6a2d" stroke-width="6"/><path d="M140 82 C160 65 175 65 194 82 C214 65 231 65 249 82" stroke="#7a2f33" stroke-width="5" fill="none"/><path d="M650 82 C670 65 685 65 704 82 C724 65 741 65 759 82" stroke="#30472f" stroke-width="5" fill="none"/><text x="450" y="120" font-size="34" text-anchor="middle" fill="#5b1f1f" font-family="Georgia">The Chronicle Judges</text><text x="450" y="168" font-size="22" text-anchor="middle" fill="#30472f" font-family="Georgia">Your path has taken shape</text><text x="450" y="215" font-size="18" text-anchor="middle" fill="#6d4a1f" font-family="Georgia">Honor • Love • Fear • Recklessness</text></svg>`
     };
 
     const scenes = {
@@ -999,7 +1001,7 @@ How will you end the tale?`,
 Your reunion is not simple happiness untouched by memory. Too much has happened for innocence to return. Yet what is restored is something greater than innocence: tested fidelity. The vow survives distance. The token survives rival claim. The heart that once knew no love now knows one strong enough to endure sea, exile, rumor, and war.
 
 This is the ending in which suffering finds its answer and the promise made in secret is fulfilled in the open world.`,
-        choices: [{ text: "Close the chronicle.", next: "p8_main", effect: {} }]
+        choices: [{ text: "See what kind of Guigemar you became.", next: "score_summary", effect: {} }]
       },
       end_honourable_parting: {
         title: "End: Honourable Parting",
@@ -1008,7 +1010,7 @@ This is the ending in which suffering finds its answer and the promise made in s
 This ending carries sorrow, but not failure. It suggests that honor may sometimes demand relinquishment rather than embrace, and that the noblest proof of love may be the refusal to turn reunion into another form of ownership.
 
 You leave one another changed forever, joined more deeply in memory than many are in marriage.`,
-        choices: [{ text: "Close the chronicle.", next: "p8_main", effect: {} }]
+        choices: [{ text: "See what kind of Guigemar you became.", next: "score_summary", effect: {} }]
       },
       end_lost_love: {
         title: "End: Lost Love Unclaimed",
@@ -1017,7 +1019,7 @@ You leave one another changed forever, joined more deeply in memory than many ar
 The lady is not fully lost, nor fully secured. The chance for a clear resolution passes, and with it the possibility of the life your vows once imagined. What remains is grief of a quieter, more haunting kind: not the grief of open tragedy, but of fulfillment narrowly missed.
 
 This ending belongs to fear, delay, and the terrible truth that love can fail not only through violence, but through the inability to choose.`,
-        choices: [{ text: "Close the chronicle.", next: "p8_main", effect: {} }]
+        choices: [{ text: "See what kind of Guigemar you became.", next: "score_summary", effect: {} }]
       },
       end_wreckage: {
         title: "End: Wreckage Lost by Your Own Hand",
@@ -1026,7 +1028,13 @@ This ending belongs to fear, delay, and the terrible truth that love can fail no
 This is the ending of reckless love ungoverned by wisdom: passionate, forceful, and self-destroying. The knight who once lacked feeling has found it in abundance, but without measure it becomes another curse.
 
 The tale closes not in healing, but in wreckage.`,
-        choices: [{ text: "Close the chronicle.", next: "p8_main", effect: {} }]
+        choices: [{ text: "See what kind of Guigemar you became.", next: "score_summary", effect: {} }]
+      },
+      score_summary: {
+        title: "Your Final Chronicle",
+        text: `The tale is finished, but the shape of your choices remains. The scores below reveal which force guided your Guigemar most strongly: honor, love, fear, or recklessness.`,
+        scorePage: true,
+        choices: [{ text: "Begin the lai again.", next: "cover", effect: {} }]
       }
     };
 
@@ -1034,6 +1042,123 @@ The tale closes not in healing, but in wreckage.`,
       Object.keys(effect).forEach(key => {
         if (typeof state[key] === 'number') state[key] += effect[key];
       });
+    }
+
+
+    const scoreEndings = {
+      "honor": {
+        title: "The Knight Who Did Right",
+        subtitle: "Honor — dominant path",
+        text: `You chose correctly, again and again, not because it was easy but because you understood that a knight's worth is measured in the moments when the right action costs something. You stood your ground when the lord threatened your life. You declined marriages without cruelty. You sought Meriaduc through legitimate means before raising a sword. When the castle fell, you did not press beyond what justice required.
+Marie de France would approve of this Guigemar. He is the kind of figure her lais admire without always producing: a man who holds to a code not because it benefits him, but because he has decided it is the shape of a good life. The white hind's curse found in him exactly the vessel it needed — a man capable of suffering without bitterness, of action without excess.
+The lady is free. You are together. And the story, when it is sung to the music of a harp in some lord's hall long from now, will be told as a story of a knight who behaved well in difficult circumstances. That is not a small thing. That is, in fact, the whole thing.`
+      },
+      "love": {
+        title: "The Knight Who Felt Everything",
+        subtitle: "Love — dominant path",
+        text: `You followed love from the moment it arrived, and you followed it without reservation. When the hind cursed you, something in you recognised it not as punishment but as direction. When the lady's eyes found yours in the garden, you did not protect yourself from what was happening. When the tokens were made, they were not a strategy — they were the truest thing you had ever done.
+This is the love Marie de France means when she says love is a wound within the heart that, if it cannot win its way out, becomes an illness that lasts long. Yours won its way out. You let it. Every suffering you endured — the separation, the grief, the belt that would not open for anyone else — was evidence of the same thing: that you had been reached, finally, by something larger than yourself.
+The prophecy was not a curse. It was a description. And you were exactly the man it described.`
+      },
+      "fear": {
+        title: "The Knight Who Held Back",
+        subtitle: "Fear — dominant path",
+        text: `You were not a coward. That is an important distinction, and Marie de France would insist on it. You were a man for whom love represented something more frightening than any armed adversary — the loss of control over your own inner life, the exposure of a self you had kept carefully managed. You resisted, deflected, retreated, rationalised. You needed more time. More information. More certainty.
+The white hind did not curse a coward. She cursed a man who was capable of love and choosing, repeatedly, not to enter into it fully. That is a more precise and more painful diagnosis. The belt at your hip knew it. The ship knew it. Even the unlocked door of the lady's tower knew it — fate arranged her escape and brought her to the same shore as you, and still you hesitated.
+Where you arrived, in the end, is your own story. But Marie's observation stands: the cure for the wound was always available. The wound stayed open only as long as you kept it at arm's length.`
+      },
+      "recklessness": {
+        title: "The Knight Who Moved Too Fast",
+        subtitle: "Recklessness — dominant path",
+        text: `Speed is not courage. Loudness is not confidence. Action without patience is not the same as action. You learned some version of this during your time with the lai — perhaps not enough of it, perhaps more than you expected — but the shape of your journey was the shape of a man who trusted his own momentum above all else, and discovered that momentum alone cannot open a knotted shirt or a buckled belt.
+The hind's curse was specifically designed for someone like you. It required waiting. It required trusting a process you couldn't control or accelerate. The ship sailed itself. The garden kept its own time. The tokens worked on their own terms. Every moment in this story that went wrong for you went wrong at the exact point where you tried to override the pace of things.
+What you made of that lesson is what your ending is. The lai doesn't moralize further than necessary. You know what you did, and what it cost, and what — if anything — it gained.`
+      },
+      "honor+love": {
+        title: "The Knight of Courtly Love",
+        subtitle: "Honor and Love — equally dominant",
+        text: `This is the pairing Marie de France understood best, and wrote about most carefully. Honor without love becomes rigidity; love without honor becomes selfishness. Together they produce something the lais consistently reward: a man who feels everything deeply and behaves well because of it, not despite it.
+You suffered for the lady not as a transaction — not because suffering would earn you something — but because love of that quality simply produces suffering as a byproduct, the way fire produces light. And you honoured her throughout: as a person with her own story, her own captivity, her own terms for being free.
+The doe said all who love would marvel at what you endured together. This is the pairing that earns that marveling. Not perfect control, not perfect feeling — but both things present and in conversation, pulling against each other and producing, in the friction, something worth singing about.`
+      },
+      "honor+fear": {
+        title: "The Knight Who Did Right and Held Back",
+        subtitle: "Honor and Fear — equally dominant",
+        text: `You behaved correctly in public and retreated in private. Your honour was real — the choices you made when others were watching, when your actions had consequences for other people, were consistently good ones. But in the interior spaces of the story — the garden, the sleepless nights, the moment when you might have stepped forward and chose instead to wait for more certainty — something held you back.
+This is not an uncommon combination. It produces men who are respected and not fully known, admired and not fully reached. The belt at your hip is an apt symbol: a perfect lock, and you with the key, deciding again and again that the moment to use it has not quite arrived.
+The lady, in whatever version of this story you ended in, understood you better than you understood yourself. She always does, in Marie's telling. Whether she waited long enough for you to fully arrive is the question only you can answer.`
+      },
+      "honor+recklessness": {
+        title: "The Knight of Contradictions",
+        subtitle: "Honor and Recklessness — equally dominant",
+        text: `You are one of Marie's more interesting figures: a man whose instincts pulled sharply in two directions and who acted on both of them, sometimes in the same hour. You charged into things that required patience, and then conducted yourself with impeccable dignity once inside them. You acted without thinking and then thought very carefully about the consequences. You were too fast and too principled, and both things were genuinely true of you.
+The result is a story with more texture than most. Not a smooth arc of virtue rewarded, not a cautionary tale of impulsiveness punished — something more ragged and more honest. You won things you shouldn't have won by being too bold. You lost things you should have kept by being too hasty. And somewhere in the middle of all that, you behaved honourably enough that the story came out on the right side of things, more or less.
+Marie would find you exhausting and compelling in equal measure. She wrote several knights who share your particular combination.`
+      },
+      "love+fear": {
+        title: "The Knight Who Loved and Doubted in Equal Measure",
+        subtitle: "Love and Fear — equally dominant",
+        text: `You felt it all. That was never the question. The love was real, the wound was real, the sleepless nights were real. But the fear was equally real — a persistent undertow pulling against every forward motion, making you hesitate at the thresholds, qualify the declarations, protect yourself at the moments when protection was the wrong impulse.
+This is the most painful of the tied endings, because love and fear inhabit the same space in the chest. Every time love pulled you forward, fear noted the cost. Every time fear made you step back, love made you regret it within the hour. You were never fully present in either and never fully absent from either.
+The white hind's prophecy described a love that produces suffering. It did not specify that the suffering had to come from external obstacles. Some of the deepest suffering in this lai was self-generated: by the man who felt everything and could not always trust himself to act on it.`
+      },
+      "love+recklessness": {
+        title: "The Knight Who Loved Loudly",
+        subtitle: "Love and Recklessness — equally dominant",
+        text: `You loved without calculation, which is a quality Marie admires. You also acted without patience, which is a quality she treats with more caution. Put together, they produce a particular kind of adventure: vivid, intense, occasionally disastrous, and impossible to look away from.
+You moved toward the lady the way you moved through everything — quickly, openly, without the protective hesitation that keeps most people from being hurt. This made things happen faster than they might otherwise have. It also made things break that might otherwise have held. The tokens mattered more to you as symbols of feeling than as practical instruments of reunion, and that says something true about the kind of love you carried.
+The lai ends, as it always ends, with the lady. Whether you arrived at that ending gracefully or chaotically, whether the final reunion was earned through patience or seized through sheer insistence — that is the particular story you told. And it was, whatever its shape, a love story. Marie can work with that.`
+      },
+      "fear+recklessness": {
+        title: "The Knight of Avoidance and Excess",
+        subtitle: "Fear and Recklessness — equally dominant",
+        text: `This is the pairing that makes the least sense from the outside and the most sense from the inside. You ran away from the things that required emotional courage and charged toward the things that required physical courage, which is a very common way of being a man, and one that Marie de France identified and documented with her usual precise irony.
+The hind did not expect you. Her curse was designed for a man who would feel love and act on it thoughtfully — but you felt it, panicked, and then overcompensated. The garden was too intimate. Meriaduc's court was too confrontational. You were most comfortable at the extremes — alone in the forest, or in the thick of a siege — and least comfortable in the delicate middle ground where the actual work of love gets done.
+The question is what the lady made of you. She has endured a great deal and is a good judge of character. Whether she decided you were worth the particular chaos of loving — that judgment belongs to her, and Marie leaves her the dignity of keeping it.`
+      },
+      "honor+love+fear": {
+        title: "The Knight of Almost",
+        subtitle: "Honor, Love, and Fear — three-way tie",
+        text: `Three forces in roughly equal measure: the code you lived by, the feeling you were capable of, and the self-protective hesitation that kept both of them from operating at full strength. You were a good man who loved genuinely and held himself back at the crucial moments, and those three things together produced a life of considerable dignity and considerable unrealised potential.
+The tokens are the emblem of this ending. You made them, and they were real — but there were moments when you weren't sure you believed in them, when the belt seemed like a burden rather than a bond, when you looked at the knot in the shift and thought about simply cutting it and being done. You didn't. That matters. But the thought was there, and Marie notices thoughts.
+You were almost the knight the hind's prophecy needed. Almost, repeatedly, with great sincerity, is a kind of life. It is not the life the lai is most interested in, but it is a recognisably human one.`
+      },
+      "honor+love+recklessness": {
+        title: "The Knight of Passionate Virtue",
+        subtitle: "Honor, Love, and Recklessness — three-way tie",
+        text: `This is the liveliest of the three-way endings, and the most forgiving. You loved with full commitment, conducted yourself with genuine honour, and moved through both at a pace that sometimes outran your own judgment. The result is a story with the best qualities of the main story and some of its rougher edges showing.
+The hind's curse, retrospectively, seems almost designed for you. You needed something that would slow you down — a wound that couldn't be outpaced, a ship you couldn't steer, a knot you couldn't cut. Fate arranged your deceleration. You resisted it at several points and eventually submitted to it, and the submission is what made the reunion possible.
+Honor kept you true to the lady when other options appeared. Love kept you searching when reason said to stop. Recklessness kept you moving when patience would have stalled you entirely. It is not the most elegant combination, but it is a working one.`
+      },
+      "honor+fear+recklessness": {
+        title: "The Knight of Displacement",
+        subtitle: "Honor, Fear, and Recklessness — three-way tie",
+        text: `You were brave in every direction except the one that mattered most. In battle: fearless. In code: reliable. In the face of armed men, political adversaries, and physical danger: absolutely steady. But in the garden, in the sleepless hours, in the moment when someone looked at you and waited — there, specifically there, the recklessness and the fear operated in alternation, and love never got a clear run at you.
+This combination produces a particular kind of knight: famous, respected, genuinely honourable, and not quite reachable. The lady in the garden felt it. She is perceptive, and she has had a long time to study the gap between what people say and what they feel.
+Whether the lai ended well for this Guigemar depends on whether he arrived at the recognition scene having learned anything from the shape of his own evasions. Marie is interested in whether people learn. She leaves the judgment open.`
+      },
+      "love+fear+recklessness": {
+        title: "The Knight of Full Weather",
+        subtitle: "Love, Fear, and Recklessness — three-way tie",
+        text: `Everything at once, and too much of all of it. You loved recklessly and feared that love and charged at it anyway and retreated from it and charged again, and the whole business was exhausting to live inside and, one suspects, equally exhausting for anyone near you. But — and this is Marie's point — it was never indifference. It was never the smooth, managed absence that the story began with.
+The hind's antlered head, the doe who was also a stag, the creature that was two things simultaneously — she is your emblem. You were also two things simultaneously, at minimum. Love and fear are not opposites in this lai; they are the same response to the same overwhelming experience, and recklessness is what happens when you can't decide between them and move anyway.
+You are the messiest of the Guigemars and possibly the most honest one. The story happened to you in its fullest form. Whether you were ready for it is a different question, and one the lai is too polite to answer directly.`
+      },
+      "honor+love+fear+recklessness": {
+        title: "The Knight of the Complete Lai",
+        subtitle: "Honor, Love, Fear, and Recklessness — perfect four-way tie",
+        text: `You are every Guigemar at once, and Marie de France, who understood that people are not single things, would recognise you immediately. You moved through the story choosing everything in equal measure: the honourable path and the reckless one, the open heart and the guarded one. You are not a type. You are a person.
+The lai was built for someone like you — not the hero of a simplified moral fable, but a figure complicated enough to carry its full weight. The white hind with her stag's antlers was two things at once. The ship that sailed without a crew operated by rules no one fully understood. The knotted tokens worked by a logic that was not quite mechanical and not quite magical. This is a story full of things that refuse to be only one thing.
+So are you. The score is tied. The tokens are made. The ship has brought you to the right shore, by whatever combination of instinct and hesitation and love and wrong-headedness got you there.`
+      }
+    };
+
+    function getScoreEnding() {
+      const order = ["honor", "love", "fear", "recklessness"];
+      const maxScore = Math.max(...order.map(key => state[key]));
+      const winners = order.filter(key => state[key] === maxScore);
+      const key = winners.join("+");
+      return scoreEndings[key] || scoreEndings[winners[0]];
     }
 
     let currentScene = 'cover';
@@ -1062,6 +1187,11 @@ The tale closes not in healing, but in wreckage.`,
         <div class="stat-pill">Fear: ${state.fear}</div>
         <div class="stat-pill">Recklessness: ${state.recklessness}</div>
       `;
+
+      if (scene.scorePage) {
+        const finalResult = getScoreEnding();
+        endingBox.innerHTML = `<div class="ending"><strong>${finalResult.title}</strong><em>${finalResult.subtitle}</em><br><br>${finalResult.text.replaceAll('\\n', '<br><br>')}<br><br><strong>Final Scores</strong><br>Honor: ${state.honor} &nbsp; • &nbsp; Love: ${state.love} &nbsp; • &nbsp; Fear: ${state.fear} &nbsp; • &nbsp; Recklessness: ${state.recklessness}</div>`;
+      }
 
       scene.choices.forEach(choice => {
         const button = document.createElement('button');
