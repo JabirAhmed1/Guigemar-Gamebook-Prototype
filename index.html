@@ -1157,7 +1157,6 @@ So are you. The score is tied. The tokens are made. The ship has brought you to 
       const order = ["honor", "love", "fear", "recklessness"];
       const maxScore = Math.max(...order.map(key => state[key]));
       const winners = Object.keys(scores).filter(key => scores[key] === maxScore);
-);
       const key = winners.join("+");
       return scoreEndings[key] || scoreEndings[winners[0]];
     }
