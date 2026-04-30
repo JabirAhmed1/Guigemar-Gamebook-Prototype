@@ -1156,7 +1156,8 @@ So are you. The score is tied. The tokens are made. The ship has brought you to 
     function getScoreEnding() {
       const order = ["honor", "love", "fear", "recklessness"];
       const maxScore = Math.max(...order.map(key => state[key]));
-      const winners = Object.keys(scores).filter(key => scores[key] === maxScore);
+      const TIE_THRESHOLD = 1;
+      const winners = order.filter(key => state[key] >= maxScore - TIE_THRESHOLD);
       const key = winners.join("+");
       return scoreEndings[key] || scoreEndings[winners[0]];
     }
